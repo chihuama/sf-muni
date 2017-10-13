@@ -118,18 +118,10 @@ class BusLayer extends React.Component {
             return (
                 <g className={"route-" + tag}>{buses}</g>
             );
-        });
-
-        // test
-        Object.keys(this.state.busesAtRoutes).forEach(function(tag) {
-            d3.select(".route-" + tag).style("display", "none");
-        });
-        d3.select(".route-6").style("display", "block");
-        d3.select(".route-N").style("display", "block");
-        
+        });        
 
         return (
-            <g className="activeBuses">{routes}</g>
+            <g className="allBuses">{routes}</g>
         );
     }
 

@@ -44,7 +44,23 @@ class RouteSelector extends React.Component {
     
     // update the selections
     handleSelectChange (value) {
-		console.log('You\'ve selected:', value);
+        console.log('You\'ve selected:', value);
+        let selectRoutes = value.split(",");
+
+        if (value === "all") {  // display all buses
+            Object.keys(this.routeList).forEach(function(tag) {
+                d3.select(".route-" + tag).style("display", "block");
+            });            
+        } else {  // only display the buses on the selected routes
+            Object.keys(this.routeList).forEach(function(tag) {
+                d3.select(".route-" + tag).style("display", "none");
+            });
+            
+            selectRoutes.forEach(function(route) {
+                d3.select(".route-" + route).style("display", "block");
+            });
+        }
+
 		this.setState({ value });
 	}
 
