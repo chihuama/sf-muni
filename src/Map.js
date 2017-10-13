@@ -51,12 +51,6 @@ class Map extends React.Component {
             .then(function(responses){
                 // get the detailed info from each route, e.g., color                
                 responses.forEach(function(response) {
-                    // let routeInfo = {};
-                    // routeInfo.tag = response.data.route.tag;  // e.g., E
-                    // routeInfo.title = response.data.route.title;  // e.g., E-Embarcadero
-                    // routeInfo.color = response.data.route.color;  // e.g., #667744
-                    // routes.push(routeInfo);
-
                     // use the route tag as the key
                     routes[response.data.route.tag] = {};  // e.g., E
                     routes[response.data.route.tag].title = response.data.route.title;  // e.g., E-Embarcadero
@@ -65,7 +59,6 @@ class Map extends React.Component {
                 // update the routes info (w/ color) in the state
                 that.setState({routes});
             });
-
     }
     
     // zoom in/out the map
@@ -83,6 +76,7 @@ class Map extends React.Component {
         d3.select(".mapLayers").attr("transform", `scale(${this.zoom})`);
     }
 
+    
     render() {
         console.log(this.routeList);
 
