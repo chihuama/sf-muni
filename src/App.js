@@ -27,12 +27,6 @@ class App extends Component {
     
     // get the route list from the server
     axios.get("http://webservices.nextbus.com/service/publicJSONFeed?command=routeList&a=sf-muni")
-      // .then(res => {
-      //   console.log(res);
-      //   let routes = res.data.route;
-      //   this.setState({routes});
-      //   console.log(this.state.routes);  
-      // });
       .then(function(res) {       
         // update the routes in the state
         that.setState({"routes": res.data.route});     
@@ -44,7 +38,6 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          {/* <img src={logo} className="App-logo" alt="logo" /> */}
           <h1 className="App-title">Welcome to San Francisco Muni Tracker</h1>
         </header>
         <Map 
@@ -61,9 +54,3 @@ class App extends Component {
 }
 
 export default App;
-
-
-// http://webservices.nextbus.com/service/publicJSONFeed?command=routeList&a=sf-muni
-// http://webservices.nextbus.com/service/publicJSONFeed?command=routeConfig&a=sf-muni&r=N
-// http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&r=N&t=1144953500233 (t=epochTime)
-

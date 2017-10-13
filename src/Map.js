@@ -3,6 +3,7 @@ import * as d3 from "d3";
 
 import axios from 'axios';
 
+import RouteSelector from "./RouteSelector";
 import MapLayer from "./MapLayer";
 import BusLayer from "./BusLayer";
 
@@ -12,7 +13,6 @@ class Map extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // value: null,
             routes: {},
         };
         
@@ -76,21 +76,24 @@ class Map extends React.Component {
         d3.select(".mapLayers").attr("transform", `scale(${this.zoom})`);
     }
 
-    
+
     render() {
         console.log(this.routeList);
 
         return (
-            <svg width={this.width} height={this.height} onWheel={this.scrolled.bind(this)}>
-                <g className="mapLayers" transform={`scale( ${this.zoom} )`}>
-                    {/* four layers of different type of maps */}
-                    <MapLayer data={this.neighborhoods} width={this.width} height={this.height} strokeColor={"darkgray"} strokeWidth={1} fillColor={"lightgray"} />
-                    <MapLayer data={this.arteries} width={this.width} height={this.height} strokeColor={"white"} strokeWidth={4} fillColor={"none"} />
-                    <MapLayer data={this.streets} width={this.width} height={this.height} strokeColor={"white"} strokeWidth={2} fillColor={"none"} />   
-                    <MapLayer data={this.freeways} width={this.width} height={this.height} strokeColor={"#fdae61"} strokeWidth={6} fillColor={"none"} />     
-                    <BusLayer data={this.state.routes} streetsJson={this.streets} width={this.width} height={this.height} />
-                </g>                        
-            </svg>
+            <div>
+                <RouteSelector routeList={this.state.routes} />
+                <svg width={this.width} height={this.height} onWheel={this.scrolled.bind(this)}>
+                    <g className="mapLayers" transform={`scale( ${this.zoom} )`}>
+                        {/* four layers of different type of maps */}
+                        <MapLayer data={this.neighborhoods} width={this.width} height={this.height} strokeColor={"darkgray"} strokeWidth={1} fillColor={"lightgray"} />
+                        <MapLayer data={this.arteries} width={this.width} height={this.height} strokeColor={"white"} strokeWidth={4} fillColor={"none"} />
+                        <MapLayer data={this.streets} width={this.width} height={this.height} strokeColor={"white"} strokeWidth={2} fillColor={"none"} />   
+                        <MapLayer data={this.freeways} width={this.width} height={this.height} strokeColor={"#fdae61"} strokeWidth={6} fillColor={"none"} />     
+                        <BusLayer data={this.state.routes} streetsJson={this.streets} width={this.width} height={this.height} />
+                    </g>                        
+                </svg>
+            </div>
         );
     }
 

@@ -9,8 +9,7 @@ class BusLayer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: null,
-            routesBuses: {},
+            busesAtRoutes: {},
         };
 
         // pass the properties
@@ -32,8 +31,7 @@ class BusLayer extends React.Component {
         console.log(currentTime);
 
         // get the active buses info on each route from the server
-        // Promise.all(Object.keys(this.routes).map((routeTag) => axios.get("http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&r=" + routeTag + `&t=${currentTime - 10000}`)))  
-        Promise.all(Object.keys(this.routes).map((routeTag) => axios.get("http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&r=" + routeTag + "&t=1507911292859")))                  
+        Promise.all(Object.keys(this.routes).map((routeTag) => axios.get("http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=sf-muni&r=" + routeTag + `&t=${currentTime - 10000}`)))          
             .then(function(responses) {
                 // scan for each route
                 responses.forEach(function(response) {
@@ -70,7 +68,7 @@ class BusLayer extends React.Component {
                     }
                 });
 
-                that.setState({routesBuses: that.routes});
+                that.setState({busesAtRoutes: that.routes});
                 console.log("done");
             })
             .catch(function(err) {
@@ -87,7 +85,7 @@ class BusLayer extends React.Component {
     
 
     render() {
-        console.log(this.state.routesBuses);
+        console.log(this.state.busesAtRoutes);
 
         // alias this -> that
         let that = this;
@@ -95,36 +93,13 @@ class BusLayer extends React.Component {
         let projection = d3.geoAlbersUsa()
             .fitSize([this.width, this.height], this.geoJson);
 
-        // let buses = [];
-        
-        // // scan for each route
-        // Object.keys(this.state.routesBuses).forEach(function(tag) {
-        //     // get the vehichel list of this route
-        //     let vehicles = that.state.routesBuses[tag].vehicleList;
-        //     // update the style based on the color of this route
-        //     let style = {stroke: "none", fill: "#" + that.state.routesBuses[tag].color};   
-
-        //     buses = buses.concat(vehicles.map(function(vehicle) {
-        //         // get the x/y coordinate for each bus
-        //         let coordinate = projection([vehicle.lon, vehicle.lat]);
-
-        //         return (<circle
-        //             cx={coordinate[0]}
-        //             cy={coordinate[1]}
-        //             r={3}
-        //             style={style}
-        //             key={tag + "-" + vehicle.id}
-        //         />);
-        //     }));
-        // });
-
         let routes = [];
         // scan for each route        
-        routes = Object.keys(this.state.routesBuses).map(function(tag) {
+        routes = Object.keys(this.state.busesAtRoutes).map(function(tag) {
             // get the vehichel list of this route
-            let vehicles = that.state.routesBuses[tag].vehicleList;
+            let vehicles = that.state.busesAtRoutes[tag].vehicleList;
             // update the style based on the color of this route
-            let style = {stroke: "none", fill: "#" + that.state.routesBuses[tag].color};
+            let style = {stroke: "none", fill: "#" + that.state.busesAtRoutes[tag].color};
 
             let buses = [];
             buses = vehicles.map(function(vehicle) {
@@ -145,17 +120,15 @@ class BusLayer extends React.Component {
             );
         });
 
-        Object.keys(this.state.routesBuses).forEach(function(tag) {
+        // test
+        Object.keys(this.state.busesAtRoutes).forEach(function(tag) {
             d3.select(".route-" + tag).style("display", "none");
         });
         d3.select(".route-6").style("display", "block");
+        d3.select(".route-N").style("display", "block");
         
 
-
-        // console.log(buses);
-
         return (
-            // <g className="activeBuses">{buses}</g>
             <g className="activeBuses">{routes}</g>
         );
     }
