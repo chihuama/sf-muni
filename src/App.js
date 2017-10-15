@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import axios from 'axios';
 
-import Map from './Map';
+import Map from './Components/Map';
 
 import neighborhoodsJson from "./maps/neighborhoods.json";
 import freewaysJson from "./maps/freeways.json";
@@ -16,6 +15,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    
     this.state = {
       routes: [],
     }

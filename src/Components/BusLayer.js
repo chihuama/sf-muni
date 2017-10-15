@@ -12,12 +12,14 @@ class BusLayer extends React.Component {
             busesAtRoutes: {},
         };
 
-        // pass the properties
+        // store variables from class properties
         this.routes = props.data;  
-
         this.geoJson = props.streetsJson;        
         this.width = props.width;
         this.height = props.height;
+        this.selectedRoutes = props.selectedRoutes;
+
+        this.routeOpacity = {};
     }
 
     loadData() {
@@ -77,10 +79,27 @@ class BusLayer extends React.Component {
     }
 
     // update object with new properties
-    componentWillReceiveProps(nextProps) {        
-        this.routes = nextProps.data;
+    componentWillReceiveProps(nextProps) {         
+        let that = this;  
+    
+        this.routes = nextProps.data;  // an object
+        this.selectedRoutes = nextProps.selectedRoutes;  // an array
 
-        setInterval(this.loadData.bind(this), 15000);          
+        if (this.selectedRoutes.includes("all")) {  // display all buses
+            Object.keys(this.routes).map((routeTag) => this.routeOpacity[routeTag] = 1);        
+        } else {  // only display the buses on the selected routes
+            Object.keys(this.routes).map((routeTag) => this.routeOpacity[routeTag] = 0); 
+            if (this.selectedRoutes[0] !== "") {
+                this.selectedRoutes.map((routeTag) => this.routeOpacity[routeTag] = 1);                        
+            }
+        }   
+
+        // only call the setInterval func once
+        if (!this.dataInterval) {
+            this.dataInterval = setInterval(function() {
+                that.loadData();
+            }, 15000);
+        }     
     }
     
 
@@ -99,7 +118,7 @@ class BusLayer extends React.Component {
             // get the vehichel list of this route
             let vehicles = that.state.busesAtRoutes[tag].vehicleList;
             // update the style based on the color of this route
-            let style = {stroke: "none", fill: "#" + that.state.busesAtRoutes[tag].color};
+            let style = {stroke: "none", fill: "#" + that.state.busesAtRoutes[tag].color, opacity: that.routeOpacity[tag] };
 
             let buses = [];
             buses = vehicles.map(function(vehicle) {

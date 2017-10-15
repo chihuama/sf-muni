@@ -3,25 +3,26 @@ import * as d3 from "d3";
 
 import axios from 'axios';
 
-import RouteSelector from "./RouteSelector";
 import MapLayer from "./MapLayer";
 import BusLayer from "./BusLayer";
+import RouteSelector from "./RouteSelector";
 
 
 class Map extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             routes: {},
-        };
+            selectedRoutes: ["all"],            
+        };     
         
-        // pass the properties
+        // store variables from class properties
         this.neighborhoods = props.neighborhoods;
         this.freeways = props.freeways;
         this.arteries = props.arteries;        
         this.streets = props.streets;
-
         this.routeList = props.routeList;
 
         // set the map size
@@ -30,6 +31,8 @@ class Map extends React.Component {
         
         // set the initial zoom level
         this.zoom = 1;
+
+        this.routesSelect = this.routesSelect.bind(this);   
     }
 
     // update object with new properties
@@ -73,7 +76,13 @@ class Map extends React.Component {
             this.zoom += zoomIncrement;
         }
 
+        // there must be a better way to do it...
         d3.select(".mapLayers").attr("transform", `scale(${this.zoom})`);
+    }
+
+    // update the selected routes -> RouteSelector and BusLayer will re-render
+    routesSelect(selectedRoutes) {
+        this.setState({ selectedRoutes });
     }
 
 
@@ -82,15 +91,15 @@ class Map extends React.Component {
 
         return (
             <div>
-                <RouteSelector routeList={this.state.routes} />
-                <svg width={this.width} height={this.height} onWheel={this.scrolled.bind(this)}>
+                <RouteSelector routeList={this.state.routes} selectedRoutes={this.state.selectedRoutes} handleSelectChange={this.routesSelect} />
+                <svg width={this.width} height={this.height} onWheel={this.scrolled}>
                     <g className="mapLayers" transform={`scale( ${this.zoom} )`}>
                         {/* four layers of different type of maps */}
                         <MapLayer data={this.neighborhoods} width={this.width} height={this.height} strokeColor={"darkgray"} strokeWidth={1} fillColor={"lightgray"} />
                         <MapLayer data={this.arteries} width={this.width} height={this.height} strokeColor={"white"} strokeWidth={4} fillColor={"none"} />
                         <MapLayer data={this.streets} width={this.width} height={this.height} strokeColor={"white"} strokeWidth={2} fillColor={"none"} />   
                         <MapLayer data={this.freeways} width={this.width} height={this.height} strokeColor={"#fdae61"} strokeWidth={6} fillColor={"none"} />     
-                        <BusLayer data={this.state.routes} streetsJson={this.streets} width={this.width} height={this.height} />
+                        <BusLayer data={this.state.routes} streetsJson={this.streets} width={this.width} height={this.height} selectedRoutes={this.state.selectedRoutes} />
                     </g>                        
                 </svg>
             </div>

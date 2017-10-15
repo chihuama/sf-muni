@@ -6,11 +6,8 @@ class MapLayer extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            value: null,
-        };
         
-        // pass the properties
+        // store variables from class properties
         this.geoJson = props.data;
 
         this.width = props.width;
@@ -19,11 +16,16 @@ class MapLayer extends React.Component {
         this.strokeColor = props.strokeColor;
         this.strokeWidth = props.strokeWidth;
         this.fillColor = props.fillColor;
-
-        console.log(props.data);
+    }
+    
+    // only render the MapLayer once
+    shouldComponentUpdate() {
+        return false;
     }
 
     render() {
+        console.log(this.geoJson);
+        
         // alias this -> that
         let that = this;
 
