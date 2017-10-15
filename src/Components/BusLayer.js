@@ -71,7 +71,7 @@ class BusLayer extends React.Component {
                 });
 
                 that.setState({busesAtRoutes: that.routes});
-                console.log("done");
+                console.log("Got vehicles info");
             })
             .catch(function(err) {
                 console.log(err)
@@ -93,14 +93,19 @@ class BusLayer extends React.Component {
                 this.selectedRoutes.map((routeTag) => this.routeOpacity[routeTag] = 1);                        
             }
         }   
-        console.log(this.routeOpacity);
+        // console.log(this.routeOpacity);
 
-        // only call the setInterval func once
-        if (!this.dataInterval) {
-            this.dataInterval = setInterval(function() {
-                that.loadData();
-            }, 15000);
-        }     
+        // call loadData & setInterval only when this.routes is loaded w/ routes info
+        if (Object.keys(this.routes).length > 0) {            
+            // only call the setInterval func once
+            if (!this.dataInterval) {
+                this.loadData();
+                
+                this.dataInterval = setInterval(function() {
+                    that.loadData();
+                }, 15000);
+            }     
+        }
     }
     
 
