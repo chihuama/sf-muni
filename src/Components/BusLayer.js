@@ -93,6 +93,7 @@ class BusLayer extends React.Component {
                 this.selectedRoutes.map((routeTag) => this.routeOpacity[routeTag] = 1);                        
             }
         }   
+        console.log(this.routeOpacity);
 
         // only call the setInterval func once
         if (!this.dataInterval) {

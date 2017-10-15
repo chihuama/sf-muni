@@ -26,13 +26,18 @@ class Map extends React.Component {
         this.routeList = props.routeList;
 
         // set the map size
-        this.width = 1200;
-        this.height = 800;
+        this.width = 1080;
+        this.height = 720;
         
-        // set the initial zoom level
-        this.zoom = 1;
-
         this.routesSelect = this.routesSelect.bind(this);   
+
+        // pan and zoom using d3.zoom()
+        this.zoom = d3.zoom()
+            .scaleExtent([1 / 2, 8])
+            .translateExtent([[0, 0], [this.width, this.height]])
+            .on("zoom", function () {
+                d3.select(this).attr("transform", d3.event.transform)
+            });
     }
 
     // update object with new properties
@@ -63,28 +68,11 @@ class Map extends React.Component {
                 that.setState({routes});
             });
     }
-    
-    // zoom in/out the map
-    scrolled(e) {
-        e.preventDefault();
-
-        let zoomIncrement = 0.1;
-
-        if (e.deltaY > 0) {
-            this.zoom -= zoomIncrement;            
-        } else {
-            this.zoom += zoomIncrement;
-        }
-
-        // there must be a better way to do it...
-        d3.select(".mapLayers").attr("transform", `scale(${this.zoom})`);
-    }
 
     // update the selected routes -> RouteSelector and BusLayer will re-render
     routesSelect(selectedRoutes) {
         this.setState({ selectedRoutes });
-    }
-
+    }    
 
     render() {
         console.log(this.routeList);
@@ -92,8 +80,8 @@ class Map extends React.Component {
         return (
             <div>
                 <RouteSelector routeList={this.state.routes} selectedRoutes={this.state.selectedRoutes} handleSelectChange={this.routesSelect} />
-                <svg width={this.width} height={this.height} onWheel={this.scrolled}>
-                    <g className="mapLayers" transform={`scale( ${this.zoom} )`}>
+                <svg width={this.width} height={this.height} style={{border:"2px solid gray"}}>
+                    <g className="mapLayers" ref={node => d3.select(node).call(this.zoom)}>
                         {/* four layers of different type of maps */}
                         <MapLayer data={this.neighborhoods} width={this.width} height={this.height} strokeColor={"darkgray"} strokeWidth={1} fillColor={"lightgray"} />
                         <MapLayer data={this.arteries} width={this.width} height={this.height} strokeColor={"white"} strokeWidth={4} fillColor={"none"} />
